@@ -1,0 +1,555 @@
+body {
+    font-family: 'Montserrat', sans-serif;
+    margin: 0;
+    background: linear-gradient(135deg, #e0f7fa 0%, #f0f8ff 50%, #e0f2f1 100%);
+    background-attachment: fixed;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    color: #2c3e50;
+}
+
+/* CSS for screen-reader-only elements */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* High Contrast Mode for manual toggle */
+body.a11y-high-contrast {
+    background: white !important;
+    color: black !important;
+}
+
+body.a11y-high-contrast .hotspot {
+    background-color: black !important;
+    border: 3px solid yellow !important;
+    box-shadow: 0 0 10px black !important;
+}
+
+body.a11y-high-contrast .hotspot::after {
+    color: yellow !important;
+    text-shadow: 1px 1px 0 black !important;
+}
+
+body.a11y-high-contrast .info-box {
+    background: white !important;
+    color: black !important;
+    border: 3px solid black !important;
+}
+
+body.a11y-high-contrast .site-title {
+    border: 3px solid black !important;
+}
+
+body.a11y-high-contrast .title-image {
+    filter: contrast(1.5) !important;
+    opacity: 0.95 !important;
+}
+
+body.a11y-high-contrast .menu button,
+body.a11y-high-contrast #backLink,
+body.a11y-high-contrast #a11yToggle,
+body.a11y-high-contrast #viewPdfLink,
+body.a11y-high-contrast #hotspotsToggle,
+body.a11y-high-contrast a[download] {
+    background: black !important;
+    color: yellow !important;
+    border: 2px solid yellow !important;
+}
+
+body.a11y-high-contrast #pdfLoading {
+    background: white !important;
+    color: black !important;
+    border: 2px solid black !important;
+}
+
+body.a11y-high-contrast #pdfLoading div {
+    border-top-color: black !important;
+}
+
+body.a11y-high-contrast .garden-plan-section {
+    background: white !important;
+    border: 3px solid black !important;
+}
+
+body.a11y-high-contrast #doubleClickTip {
+    background: black !important;
+    color: yellow !important;
+    border: 2px solid yellow !important;
+}
+
+/* Accessibility styles - High Contrast Mode */
+@media (prefers-contrast: more) {
+    body {
+    background: white;
+    color: black;
+    }
+    
+    .hotspot {
+    background-color: black;
+    border: 3px solid white;
+    box-shadow: 0 0 0 2px black;
+    }
+    
+    .hotspot::after {
+    color: white;
+    text-shadow: 1px 1px 0 black;
+    }
+    
+    .info-box {
+    background: white;
+    border: 3px solid black;
+    color: black;
+    }
+    
+    .site-title {
+    border: 3px solid black;
+    }
+    
+    .title-image {
+    filter: contrast(1.5);
+    opacity: 0.95;
+    }
+    
+    .menu button {
+    background: black;
+    color: white;
+    border: 2px solid white;
+    }
+    
+    .menu ul {
+    background: white;
+    border: 2px solid black;
+    }
+    
+    .menu ul li:hover {
+    background: black;
+    color: white;
+    }
+    
+    #backLink {
+    background: black;
+    color: white;
+    border: 2px solid white;
+    }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+    .info-box, .menu ul {
+    transition: none;
+    }
+    
+    .garden-container:hover {
+    transform: none;
+    }
+    
+    .site-title:hover {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    }
+    
+    .site-title:hover .title-image {
+    filter: none;
+    }
+    
+    .swipe-indicator {
+    transition: none;
+    }
+}
+
+/* Focus styles for improved keyboard navigation */
+:focus {
+    outline: 3px solid #4a90e2;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.5);
+}
+
+/* Skip to content link for screen readers */
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    padding: 8px;
+    background: #4a90e2;
+    color: white;
+    z-index: 1500;
+    transition: top 0.3s;
+}
+
+.skip-link:focus {
+    top: 0;
+}
+
+.garden-container {
+    position: relative;
+    width: 90%;
+    max-width: 800px;
+    margin: 20px auto;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    transition: all 0.3s ease;
+}
+
+.garden-container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(0,0,0,0.2);
+}
+
+.garden-image {
+    width: 100%;
+    display: block;
+}
+
+.hotspot {
+    position: absolute;
+    cursor: pointer;
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    background-color: rgba(107, 187, 107, 0.6);
+    width: 34px;
+    height: 34px;
+    transform: translate(-50%, -50%);
+    transition: all 0.3s ease;
+    box-shadow: 0 0 15px rgba(126, 173, 126, 0.5);
+    backdrop-filter: blur(2px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Hidden hotspots styles */
+.hotspots-hidden .hotspot {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.4s ease, visibility 0.4s ease;
+}
+
+/* Faded hotspots on hovering the garden container */
+.hotspots-faded .hotspot {
+    opacity: 0.3;
+    transition: opacity 0.3s ease;
+}
+
+.hotspots-faded .hotspot:hover {
+    opacity: 1;
+}
+
+/* Button active/inactive states */
+#hotspotsToggle.active {
+    background: rgba(107, 187, 107, 0.7) !important;
+    box-shadow: 0 0 8px rgba(107, 187, 107, 0.5);
+}
+
+#hotspotsToggle.inactive {
+    background: rgba(187, 107, 107, 0.7) !important;
+    box-shadow: 0 0 8px rgba(187, 107, 107, 0.5);
+}
+
+.hotspot::after {
+    content: "+";
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    text-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+}
+
+.hotspot:hover {
+    background-color: rgba(107, 187, 107, 0.9);
+    box-shadow: 0 0 20px rgba(126, 173, 126, 0.7), 0 0 0 5px rgba(126, 173, 126, 0.3);
+    transform: translate(-50%, -50%) scale(1.15);
+}
+
+.info-box {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(5px);
+    border: none;
+    border-radius: 10px;
+    padding: 15px 20px;
+    max-width: 300px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    display: none;
+    transform: translateY(-10px);
+    opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 100;
+}
+
+.info-box.active {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.info-box h2 {
+    margin: 0 0 10px;
+    color: #2c3e50;
+    border-bottom: 2px solid rgba(126, 173, 126, 0.5);
+    padding-bottom: 8px;
+    font-size: 1.4rem;
+}
+
+/* Cool Hamburger Menu Styles */
+.menu {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 1000;
+}
+
+.menu button {
+    background: rgba(51, 51, 51, 0.85);
+    color: white;
+    border: none;
+    padding: 12px 18px;
+    cursor: pointer;
+    font-size: 18px;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+}
+
+.menu button:hover {
+    background: rgba(51, 51, 51, 1);
+    transform: scale(1.05);
+}
+
+.menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 8px 0;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 12px;
+    display: none;
+    position: absolute;
+    top: 55px;
+    left: 0;
+    width: 220px;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.15);
+    transform-origin: top left;
+    transform: scale(0.95);
+    opacity: 0;
+    transition: all 0.2s ease-out;
+    overflow: hidden;
+}
+
+.menu ul.active {
+    transform: scale(1);
+    opacity: 1;
+}
+
+.menu ul li {
+    padding: 12px 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-left: 3px solid transparent;
+}
+
+.menu ul li:hover {
+    background: #e6f4ff;
+    border-left: 3px solid #77bbff;
+    padding-left: 25px;
+}
+
+footer {
+    text-align: center;
+    padding: 10px;
+    background: #333;
+    color: white;
+    font-size: 14px;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .info-box {
+    top: auto;
+    bottom: 20px;
+    right: 50%;
+    transform: translateX(50%) translateY(10px);
+    max-width: 90%;
+    width: 90%;
+    z-index: 1001;
+    }
+    
+    .info-box.active {
+    transform: translateX(50%) translateY(0);
+    }
+    
+    .hotspot {
+    width: 28px;
+    height: 28px;
+    }
+    
+    .hotspot::after {
+    font-size: 16px;
+    }
+    
+    .menu button {
+    font-size: 14px;
+    padding: 8px 12px;
+    }
+    
+    .menu ul {
+    top: 45px;
+    }
+    
+    .site-title {
+    margin: 15px auto;
+    width: 55%;
+    max-width: 175px; /* More limited width on mobile */
+    }
+    
+    #doubleClickTip {
+    bottom: 5px;
+    right: 5px;
+    padding: 4px 8px;
+    font-size: 10px;
+    }
+    
+    .garden-plan-section {
+    padding: 10px;
+    }
+    
+    .garden-plan-section h2 {
+    font-size: 1.2rem;
+    }
+    
+    #viewPdfLink, .garden-plan-section a[download] {
+    width: calc(50% - 5px);
+    justify-content: center;
+    padding: 10px;
+    font-size: 14px;
+    }
+    
+    .garden-plan-section a svg {
+    width: 18px;
+    height: 18px;
+    }
+    
+    .a11y-controls {
+    top: 10px;
+    right: 10px;
+    }
+    
+    .a11y-controls button {
+    padding: 4px 8px;
+    font-size: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .hotspot {
+    width: 24px;
+    height: 24px;
+    }
+    
+    .hotspot::after {
+    font-size: 14px;
+    }
+    
+    .about-section h1 {
+    font-size: 24px;
+    }
+    
+    .menu ul {
+    width: 200px;
+    max-width: 80vw;
+    }
+    
+    .site-title {
+    margin: 10px auto;
+    max-width: 150px; /* Even smaller on very small screens */
+    }
+    
+    .garden-plan-section h2 {
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+    }
+    
+    #viewPdfLink, .garden-plan-section a[download] {
+    padding: 8px 12px;
+    font-size: 12px;
+    }
+    
+    .garden-plan-section a svg {
+    width: 16px;
+    height: 16px;
+    }
+}
+
+/* Site Title Styles */
+.site-title {
+    text-align: center;
+    margin: 15px auto; /* Reduced from 20px to 15px */
+    max-width: 200px; /* Reduced from 250px to 200px */
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    transition: box-shadow 0.3s ease;
+}
+
+.site-title a {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+}
+
+.title-image {
+    display: block;
+    width: 100%;
+    height: auto;
+    transition: filter 0.3s ease;
+}
+
+.site-title:hover {
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+}
+
+.site-title:hover .title-image {
+    filter: brightness(1.03);
+}
+
+/* Swipe navigation styles */
+.swipe-indicator {
+    position: fixed;
+    top: 50%;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: translateY(-50%);
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+.swipe-left {
+    left: 20px;
+}
+
+.swipe-right {
+    right: 20px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

@@ -1,0 +1,1639 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cassie's Garden</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Montserrat', sans-serif;
+      margin: 0;
+      background: linear-gradient(135deg, #e0f7fa 0%, #f0f8ff 50%, #e0f2f1 100%);
+      background-attachment: fixed;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      color: #2c3e50;
+    }
+
+    /* CSS for screen-reader-only elements */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    /* High Contrast Mode for manual toggle */
+    body.a11y-high-contrast {
+      background: white !important;
+      color: black !important;
+    }
+
+    body.a11y-high-contrast .hotspot {
+      background-color: black !important;
+      border: 3px solid yellow !important;
+      box-shadow: 0 0 10px black !important;
+    }
+
+    body.a11y-high-contrast .hotspot::after {
+      color: yellow !important;
+      text-shadow: 1px 1px 0 black !important;
+    }
+
+    body.a11y-high-contrast .info-box {
+      background: white !important;
+      color: black !important;
+      border: 3px solid black !important;
+    }
+
+    body.a11y-high-contrast .site-title {
+      border: 3px solid black !important;
+    }
+
+    body.a11y-high-contrast .title-image {
+      filter: contrast(1.5) !important;
+      opacity: 0.95 !important;
+    }
+
+    body.a11y-high-contrast .menu button,
+    body.a11y-high-contrast #backLink,
+    body.a11y-high-contrast #a11yToggle,
+    body.a11y-high-contrast #viewPdfLink,
+    body.a11y-high-contrast #hotspotsToggle,
+    body.a11y-high-contrast a[download] {
+      background: black !important;
+      color: yellow !important;
+      border: 2px solid yellow !important;
+    }
+
+    body.a11y-high-contrast #pdfLoading {
+      background: white !important;
+      color: black !important;
+      border: 2px solid black !important;
+    }
+
+    body.a11y-high-contrast #pdfLoading div {
+      border-top-color: black !important;
+    }
+
+    body.a11y-high-contrast .garden-plan-section {
+      background: white !important;
+      border: 3px solid black !important;
+    }
+
+    body.a11y-high-contrast #doubleClickTip {
+      background: black !important;
+      color: yellow !important;
+      border: 2px solid yellow !important;
+    }
+
+    /* Accessibility styles - High Contrast Mode */
+    @media (prefers-contrast: more) {
+      body {
+        background: white;
+        color: black;
+      }
+
+      .hotspot {
+        background-color: black;
+        border: 3px solid white;
+        box-shadow: 0 0 0 2px black;
+      }
+
+      .hotspot::after {
+        color: white;
+        text-shadow: 1px 1px 0 black;
+      }
+
+      .info-box {
+        background: white;
+        border: 3px solid black;
+        color: black;
+      }
+
+      .site-title {
+        border: 3px solid black;
+      }
+
+      .title-image {
+        filter: contrast(1.5);
+        opacity: 0.95;
+      }
+
+      .menu button {
+        background: black;
+        color: white;
+        border: 2px solid white;
+      }
+
+      .menu ul {
+        background: white;
+        border: 2px solid black;
+      }
+
+      .menu ul li:hover {
+        background: black;
+        color: white;
+      }
+
+      #backLink {
+        background: black;
+        color: white;
+        border: 2px solid white;
+      }
+    }
+
+    /* Reduced Motion */
+    @media (prefers-reduced-motion: reduce) {
+
+      .info-box,
+      .menu ul {
+        transition: none;
+      }
+
+      .garden-container:hover {
+        transform: none;
+      }
+
+      .site-title:hover {
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      }
+
+      .site-title:hover .title-image {
+        filter: none;
+      }
+
+      .swipe-indicator {
+        transition: none;
+      }
+    }
+
+    /* Focus styles for improved keyboard navigation */
+    :focus {
+      outline: 3px solid #4a90e2;
+      outline-offset: 2px;
+      box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.5);
+    }
+
+    /* Skip to content link for screen readers */
+    .skip-link {
+      position: absolute;
+      top: -40px;
+      left: 0;
+      padding: 8px;
+      background: #4a90e2;
+      color: white;
+      z-index: 1500;
+      transition: top 0.3s;
+    }
+
+    .skip-link:focus {
+      top: 0;
+    }
+
+    .garden-container {
+      position: relative;
+      width: 90%;
+      max-width: 800px;
+      margin: 20px auto;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      transition: all 0.3s ease;
+    }
+
+    .garden-container:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    .garden-image {
+      width: 100%;
+      display: block;
+    }
+
+    .hotspot {
+      position: absolute;
+      cursor: pointer;
+      border: 2px solid rgba(255, 255, 255, 0.8);
+      border-radius: 50%;
+      background-color: rgba(107, 187, 107, 0.6);
+      width: 34px;
+      height: 34px;
+      transform: translate(-50%, -50%);
+      transition: all 0.3s ease;
+      box-shadow: 0 0 15px rgba(126, 173, 126, 0.5);
+      backdrop-filter: blur(2px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* Hidden hotspots styles */
+    .hotspots-hidden .hotspot {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.4s ease, visibility 0.4s ease;
+    }
+
+    /* Faded hotspots on hovering the garden container */
+    .hotspots-faded .hotspot {
+      opacity: 0.3;
+      transition: opacity 0.3s ease;
+    }
+
+    .hotspots-faded .hotspot:hover {
+      opacity: 1;
+    }
+
+    /* Button active/inactive states */
+    #hotspotsToggle.active {
+      background: rgba(107, 187, 107, 0.7) !important;
+      box-shadow: 0 0 8px rgba(107, 187, 107, 0.5);
+    }
+
+    #hotspotsToggle.inactive {
+      background: rgba(187, 107, 107, 0.7) !important;
+      box-shadow: 0 0 8px rgba(187, 107, 107, 0.5);
+    }
+
+    .hotspot::after {
+      content: "+";
+      color: white;
+      font-size: 18px;
+      font-weight: bold;
+      text-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+    }
+
+    .hotspot:hover {
+      background-color: rgba(107, 187, 107, 0.9);
+      box-shadow: 0 0 20px rgba(126, 173, 126, 0.7), 0 0 0 5px rgba(126, 173, 126, 0.3);
+      transform: translate(-50%, -50%) scale(1.15);
+    }
+
+    .info-box {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(5px);
+      border: none;
+      border-radius: 10px;
+      padding: 15px 20px;
+      max-width: 300px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      display: none;
+      transform: translateY(-10px);
+      opacity: 0;
+      transition: all 0.3s ease;
+      z-index: 100;
+    }
+
+    .info-box.active {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .info-box h2 {
+      margin: 0 0 10px;
+      color: #2c3e50;
+      border-bottom: 2px solid rgba(126, 173, 126, 0.5);
+      padding-bottom: 8px;
+      font-size: 1.4rem;
+    }
+
+    /* Cool Hamburger Menu Styles */
+    .menu {
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      z-index: 1000;
+    }
+
+    .menu button {
+      background: rgba(51, 51, 51, 0.85);
+      color: white;
+      border: none;
+      padding: 12px 18px;
+      cursor: pointer;
+      font-size: 18px;
+      border-radius: 50px;
+      transition: all 0.3s ease;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .menu button:hover {
+      background: rgba(51, 51, 51, 1);
+      transform: scale(1.05);
+    }
+
+    .menu ul {
+      list-style: none;
+      margin: 0;
+      padding: 8px 0;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 12px;
+      display: none;
+      position: absolute;
+      top: 55px;
+      left: 0;
+      width: 220px;
+      box-shadow: 0 5px 25px rgba(0, 0, 0, 0.15);
+      transform-origin: top left;
+      transform: scale(0.95);
+      opacity: 0;
+      transition: all 0.2s ease-out;
+      overflow: hidden;
+    }
+
+    .menu ul.active {
+      transform: scale(1);
+      opacity: 1;
+    }
+
+    .menu ul li {
+      padding: 12px 20px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border-left: 3px solid transparent;
+    }
+
+    .menu ul li:hover {
+      background: #e6f4ff;
+      border-left: 3px solid #77bbff;
+      padding-left: 25px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 10px;
+      background: #333;
+      color: white;
+      font-size: 14px;
+    }
+
+    /* Responsive styles */
+    @media (max-width: 768px) {
+      .info-box {
+        top: auto;
+        bottom: 20px;
+        right: 50%;
+        transform: translateX(50%) translateY(10px);
+        max-width: 90%;
+        width: 90%;
+        z-index: 1001;
+      }
+
+      .info-box.active {
+        transform: translateX(50%) translateY(0);
+      }
+
+      .hotspot {
+        width: 28px;
+        height: 28px;
+      }
+
+      .hotspot::after {
+        font-size: 16px;
+      }
+
+      .menu button {
+        font-size: 14px;
+        padding: 8px 12px;
+      }
+
+      .menu ul {
+        top: 45px;
+      }
+
+      .site-title {
+        margin: 15px auto;
+        width: 55%;
+        max-width: 175px;
+        /* More limited width on mobile */
+      }
+
+      #doubleClickTip {
+        bottom: 5px;
+        right: 5px;
+        padding: 4px 8px;
+        font-size: 10px;
+      }
+
+      .garden-plan-section {
+        padding: 10px;
+      }
+
+      .garden-plan-section h2 {
+        font-size: 1.2rem;
+      }
+
+      #viewPdfLink,
+      .garden-plan-section a[download] {
+        width: calc(50% - 5px);
+        justify-content: center;
+        padding: 10px;
+        font-size: 14px;
+      }
+
+      .garden-plan-section a svg {
+        width: 18px;
+        height: 18px;
+      }
+
+      .a11y-controls {
+        top: 10px;
+        right: 10px;
+      }
+
+      .a11y-controls button {
+        padding: 4px 8px;
+        font-size: 12px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hotspot {
+        width: 24px;
+        height: 24px;
+      }
+
+      .hotspot::after {
+        font-size: 14px;
+      }
+
+      .about-section h1 {
+        font-size: 24px;
+      }
+
+      .menu ul {
+        width: 200px;
+        max-width: 80vw;
+      }
+
+      .site-title {
+        margin: 10px auto;
+        max-width: 150px;
+        /* Even smaller on very small screens */
+      }
+
+      .garden-plan-section h2 {
+        font-size: 1.1rem;
+        margin-bottom: 10px;
+      }
+
+      #viewPdfLink,
+      .garden-plan-section a[download] {
+        padding: 8px 12px;
+        font-size: 12px;
+      }
+
+      .garden-plan-section a svg {
+        width: 16px;
+        height: 16px;
+      }
+    }
+
+    /* Site Title Styles */
+    .site-title {
+      text-align: center;
+      margin: 15px auto;
+      /* Reduced from 20px to 15px */
+      max-width: 200px;
+      /* Reduced from 250px to 200px */
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      transition: box-shadow 0.3s ease;
+    }
+
+    .site-title a {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .title-image {
+      display: block;
+      width: 100%;
+      height: auto;
+      transition: filter 0.3s ease;
+    }
+
+    .site-title:hover {
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+    }
+
+    .site-title:hover .title-image {
+      filter: brightness(1.03);
+    }
+
+    /* Swipe navigation styles */
+    .swipe-indicator {
+      position: fixed;
+      top: 50%;
+      background: rgba(255, 255, 255, 0.7);
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform: translateY(-50%);
+      opacity: 0;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    .swipe-left {
+      left: 20px;
+    }
+
+    .swipe-right {
+      right: 20px;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <div class="menu" role="navigation" aria-label="Main menu">
+    <button id="menuButton" aria-expanded="false" aria-controls="menuList" aria-label="Open menu">☰ Menu</button>
+    <ul id="menuList" role="menu" aria-hidden="true">
+      <li role="menuitem" tabindex="-1" id="aboutMenuItem">About</li>
+      <li role="menuitem" tabindex="-1" data-image="frontRight.jpg">Front Garden (right side)</li>
+      <li role="menuitem" tabindex="-1" data-image="frontLeft.jpg">Front Garden (left side)</li>
+      <li role="menuitem" tabindex="-1" data-image="frontRear.jpg">Front Garden (rear view)</li>
+      <li role="menuitem" tabindex="-1" data-image="sideFront.jpg">Side Garden (front view)</li>
+      <li role="menuitem" tabindex="-1" data-image="sideRear.jpg">Side Garden (rear view)</li>
+      <li role="menuitem" tabindex="-1" id="hotspotsToggleItem">Toggle Hotspots</li>
+      <li role="menuitem" tabindex="-1" id="a11yToggleItem">Toggle Accessibility Mode</li>
+    </ul>
+  </div>
+  <div class="a11y-controls" style="position: fixed; top: 15px; right: 15px; z-index: 900;">
+    <button id="a11yToggle" aria-label="Toggle accessibility features"
+      style="background: rgba(51, 51, 51, 0.7); color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; margin-right: 5px;">
+      <span aria-hidden="true">A11y</span>
+    </button>
+    <button id="helpToggle" aria-label="Show keyboard shortcuts"
+      style="background: rgba(51, 51, 51, 0.7); color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">
+      <span aria-hidden="true">?</span>
+    </button>
+    <button id="hotspotsToggle" aria-label="Toggle hotspots visibility"
+      style="background: rgba(51, 51, 51, 0.7); color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; margin-right: 5px; position: relative; overflow: hidden;">
+      <span aria-hidden="true" style="position: relative; z-index: 2;">👁️</span>
+      <span
+        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(107, 187, 107, 0.4); transform: translateX(-100%); transition: transform 0.3s ease;"
+        id="hotspotsToggleHighlight"></span>
+    </button>
+  </div>
+
+  <!-- Keyboard shortcuts help dialog -->
+  <div id="keyboardHelp" role="dialog" aria-labelledby="keyboardHelpTitle" aria-hidden="true"
+    style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; border-radius: 8px; padding: 20px; max-width: 400px; box-shadow: 0 5px 20px rgba(0,0,0,0.3); z-index: 2000;">
+    <h2 id="keyboardHelpTitle" style="margin-top: 0; border-bottom: 1px solid #ddd; padding-bottom: 10px;">Keyboard
+      Shortcuts</h2>
+    <div style="max-height: 300px; overflow-y: auto;">
+      <table style="width: 100%; border-collapse: collapse;">
+        <tr>
+          <th style="text-align: left; padding: 5px;">Shortcut</th>
+          <th style="text-align: left; padding: 5px;">Action</th>
+        </tr>
+        <tr>
+          <td style="padding: 5px;"><kbd>Alt</kbd> + <kbd>M</kbd></td>
+          <td style="padding: 5px;">Toggle menu</td>
+        </tr>
+        <tr>
+          <td style="padding: 5px;"><kbd>Alt</kbd> + <kbd>A</kbd></td>
+          <td style="padding: 5px;">Toggle about section</td>
+        </tr>
+        <tr>
+          <td style="padding: 5px;"><kbd>Alt</kbd> + <kbd>V</kbd></td>
+          <td style="padding: 5px;">Toggle hotspots visibility</td>
+        </tr>
+        <tr>
+          <td style="padding: 5px;"><kbd>Alt</kbd> + <kbd>P</kbd></td>
+          <td style="padding: 5px;">Toggle garden plan PDF</td>
+        </tr>
+        <tr>
+          <td style="padding: 5px;"><kbd>Alt</kbd> + <kbd>H</kbd></td>
+          <td style="padding: 5px;">Toggle accessibility mode</td>
+        </tr>
+        <tr>
+          <td style="padding: 5px;"><kbd>Alt</kbd> + <kbd>1-5</kbd></td>
+          <td style="padding: 5px;">Quick access to garden views</td>
+        </tr>
+        <tr>
+          <td style="padding: 5px;"><kbd>Tab</kbd></td>
+          <td style="padding: 5px;">Navigate between interactive elements</td>
+        </tr>
+        <tr>
+          <td style="padding: 5px;"><kbd>Enter</kbd> / <kbd>Space</kbd></td>
+          <td style="padding: 5px;">Activate buttons and hotspots</td>
+        </tr>
+        <tr>
+          <td style="padding: 5px;"><kbd>Esc</kbd></td>
+          <td style="padding: 5px;">Close any open dialog</td>
+        </tr>
+        <tr>
+          <td style="padding: 5px;"><kbd>?</kbd></td>
+          <td style="padding: 5px;">Show this help dialog</td>
+        </tr>
+      </table>
+    </div>
+    <button id="closeHelp"
+      style="margin-top: 15px; padding: 8px 16px; background: #3a7bd5; color: white; border: none; border-radius: 4px; cursor: pointer;">Close</button>
+  </div>
+
+  <main style="flex: 1;" role="main" id="main-content">
+    <!-- Site Title -->
+    <div class="site-title" aria-label="Website title">
+      <a href="#" tabindex="0">
+        <img src="title.jpeg" alt="Cassie's Garden" class="title-image">
+      </a>
+    </div>
+
+    <div class="garden-container" aria-roledescription="interactive garden map with clickable plant hotspots"
+      style="display: none;">
+      <div class="sr-only"
+        style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;">
+        This is an interactive garden map. You can explore plants by activating the hotspots that are marked on the
+        image. Each hotspot reveals information about a specific plant in the garden.
+      </div>
+      <img src="frontRight.jpg" alt="front right garden" class="garden-image" id="gardenImage">
+      <!-- Swipe indicators for mobile -->
+      <div class="swipe-indicator swipe-left" id="swipeLeft" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M15 18l-6-6 6-6"></path>
+        </svg>
+      </div>
+      <div class="swipe-indicator swipe-right" id="swipeRight" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 18l6-6-6-6"></path>
+        </svg>
+      </div>
+      <div id="doubleClickTip"
+        style="position: absolute; bottom: 10px; right: 10px; background: rgba(255, 255, 255, 0.8); padding: 6px 12px; border-radius: 15px; font-size: 12px; color: #444; opacity: 0.8; pointer-events: none; display: none; transition: opacity 0.5s ease; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+        Pro tip: Double-click image to toggle hotspots
+      </div>
+    </div>
+
+    <div class="about-section" id="aboutSection"
+      style="display: block; max-width: 800px; margin: 20px auto; padding: 20px; background: rgba(255, 255, 255, 0.8); border-radius: 12px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); backdrop-filter: blur(8px);">
+      <!-- <h1 style="text-align: center; color: #333; font-weight: 600; letter-spacing: -0.5px;">About Cassie's Garden</h1> -->
+      <p style="line-height: 1.8; color: #444; font-size: 16px;">
+        Welcome to Cassie's Garden! This website was designed as a gift for my wife Cassie to show off all of the hard
+        work she has accomplished.
+        She took it upon herself to create a beautiful garden in our front and side yards comprised of native plants.
+        The garden is not only a visual delight but also a haven for local wildlife, including bees, butterflies, and
+        birds.
+        Each garden image features hotspots that provide detailed information about specific plants, including their
+        common names, scientific names,
+        and interesting facts.
+      </p>
+      <p style="line-height: 1.8; color: #444; font-size: 16px;">
+        Thanks for stopping by and remember: be excellent to each other and party on dudes!
+      </p>
+
+      <!-- Garden Plan PDF Section -->
+      <div class="garden-plan-section"
+        style="margin-top: 30px; padding: 15px; background: rgba(255, 255, 255, 0.7); border-radius: 8px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);">
+        <h2
+          style="color: #2c3e50; font-size: 1.4rem; margin-bottom: 15px; border-bottom: 2px solid rgba(126, 173, 126, 0.5); padding-bottom: 8px;">
+          Garden Plan</h2>
+        <p style="margin-bottom: 15px; line-height: 1.6; color: #444;">
+          View Cassie's detailed garden plan with plant layout and specifications:
+        </p>
+        <div style="text-align: center; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+          <a href="CassieGardenPlan.pdf" id="viewPdfLink" target="_blank"
+            style="display: inline-flex; align-items: center; gap: 10px; padding: 12px 24px; background: #6bbb6b; color: white; text-decoration: none; border-radius: 50px; font-weight: 500; box-shadow: 0 4px 10px rgba(107, 187, 107, 0.3); transition: all 0.3s ease;"
+            aria-label="View garden plan PDF">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+              <polyline points="10 9 9 9 8 9"></polyline>
+            </svg>
+            View Garden Plan
+          </a>
+          <a href="CassieGardenPlan.pdf" download
+            style="display: inline-flex; align-items: center; gap: 10px; padding: 12px 24px; background: #3a7bd5; color: white; text-decoration: none; border-radius: 50px; font-weight: 500; box-shadow: 0 4px 10px rgba(58, 123, 213, 0.3); transition: all 0.3s ease;"
+            aria-label="Download garden plan PDF">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Download Plan
+          </a>
+        </div>
+        <div id="pdfPreview"
+          style="margin-top: 20px; height: 400px; border-radius: 8px; overflow: hidden; display: none; position: relative;">
+          <div id="pdfLoading"
+            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.9); display: flex; justify-content: center; align-items: center; z-index: 10;">
+            <div style="text-align: center;">
+              <div
+                style="width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid #3a7bd5; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto;">
+              </div>
+              <p style="margin-top: 10px; color: #333;">Loading PDF...</p>
+            </div>
+          </div>
+          <iframe id="pdfFrame" src="about:blank" data-src="CassieGardenPlan.pdf"
+            style="width: 100%; height: 100%; border: none;" title="Garden Plan PDF"></iframe>
+        </div>
+        <p style="margin-top: 10px; text-align: center; font-size: 14px; color: #666;">
+          <span
+            style="display: inline-block; padding: 2px 6px; background: rgba(58, 123, 213, 0.1); border-radius: 4px; margin-right: 4px;">Alt+P</span>
+          keyboard shortcut: Toggle PDF preview
+        </p>
+      </div>
+
+      <div style="text-align: center; margin-top: 20px;">
+        <a href="#" id="backLink"
+          style="display: inline-block; margin: 10px auto; padding: 12px 24px; background: #3a7bd5; color: white; text-decoration: none; border-radius: 50px; font-weight: 500; box-shadow: 0 4px 10px rgba(58, 123, 213, 0.3); transition: all 0.3s ease;"
+          aria-label="Return to garden view">Return to Garden View</a>
+      </div>
+    </div>
+
+    <div class="info-box" id="infoBox" role="dialog" aria-labelledby="plantName" aria-hidden="true">
+      <h2 id="plantName">Plant Name</h2>
+      <p><strong>Scientific:</strong> <span id="plantSci"></span></p>
+      <p id="plantInfo"></p>
+      <button id="closeInfoBox"
+        style="position: absolute; top: 10px; right: 10px; background: transparent; border: none; cursor: pointer; font-size: 18px; color: #666;"
+        aria-label="Close plant information">×</button>
+      <div class="info-box-footer"
+        style="margin-top: 15px; font-size: 12px; color: #777; border-top: 1px solid rgba(126, 173, 126, 0.3); padding-top: 10px; text-align: right;">
+        Tap anywhere to close or press Escape</div>
+    </div>
+  </main>
+
+  <script>
+    const hotspots = document.querySelectorAll('.hotspot');
+    const infoBox = document.getElementById('infoBox');
+    const plantName = document.getElementById('plantName');
+    const plantSci = document.getElementById('plantSci');
+    const plantInfo = document.getElementById('plantInfo');
+    const menuButton = document.getElementById('menuButton');
+    const menuList = document.getElementById('menuList');
+    const gardenImage = document.getElementById('gardenImage');
+    const gardenContainer = document.querySelector('.garden-container');
+    const aboutSection = document.getElementById('aboutSection');
+    const backLink = document.getElementById('backLink');
+    const hotspotsToggleItem = document.getElementById('hotspotsToggleItem');
+    const hotspotsToggle = document.getElementById('hotspotsToggle');
+    const hotspotsToggleHighlight = document.getElementById('hotspotsToggleHighlight');
+
+    // Hotspot visibility state
+    let hotspotsVisible = true;
+
+    // Hotspot data for each image
+    const hotspotData = {
+      frontRight: [
+        { top: '35%', left: '60%', name: 'Eastern Redbud', scientific: 'Cercis canadensis', info: 'A deciduous, often multi-trunked understory tree with a rounded crown that typically matures to 20-30\' tall with a slightly larger spread.' },
+        { top: '80%', left: '85%', name: 'Pollinator Friendly', scientific: 'Pollinator amica', info: 'Save the bees yo.' },
+        { top: '55%', left: '85%', name: 'Milkweed', scientific: 'Asclepias', info: ' A noteworthy feeder on milkweeds is the monarch butterfly, which uses and requires certain milkweeds as host plants for its larvae.' },
+        { top: '60%', left: '60%', name: 'Turtlehead', scientific: 'Chelone glabra', info: 'Genus name comes from the Greek word chelone meaning tortoise in reference to the turtlehead shape of the flowers.' },
+        { top: '85%', left: '60%', name: 'Blue flag iris', scientific: 'Iris versicolor', info: 'It is one of the three Iris species in the Iris flower data set outlined by Ronald Fisher in his 1936 paper "The use of multiple measurements in taxonomic problems" as an example of linear discriminant analysis.' },
+        { top: '35%', left: '93%', name: 'Spotted Laurel', scientific: 'Aucuba japonica', info: 'It thrives in shade and tolerates urban pollution and poor soils.  It provides vibrant year round color making it ideal for borders, foundation plantings, and container gardens.' },
+        { top: '22%', left: '80%', name: 'Thuja', scientific: 'Arbor Vitae', info: 'Evergreen trees growing from 10 to 200 feet (3 to 61 metres) tall, with stringy-textured reddish-brown bark.' },
+        { top: '65%', left: '35%', name: 'Deutzia', scientific: 'Deutzia gracilis', info: 'The flowers are produced in panicles or corymbs; they are white in most species, sometimes pink or reddish. The fruit is a dry capsule containing numerous small seeds.' },
+        { top: '50%', left: '50%', name: 'Hosta', scientific: 'Hosta', info: 'The genus was named by Austrian botanist Leopold Trattinnick in 1812, in honor of the Austrian botanist Nicholas Thomas Host.' },
+        { top: '85%', left: '25%', name: 'Yarrow', scientific: 'Achillea millefolium', info: 'A drought-tolerant perennial with ferny foliage and flat-topped flower clusters. Attracts butterflies and is excellent for cutting and drying.' },
+        { top: '75%', left: '15%', name: 'Tickseed', scientific: 'Coreopsis spp.', info: 'Easy-care perennials with cheerful daisy-like flowers that bloom throughout summer. Drought tolerant and attracts pollinators.' },
+      ],
+      frontLeft: [
+        { top: '30%', left: '50%', name: 'Pink Dogwood', scientific: 'Cornus florida', info: 'The pink dogwood is an important source of food for many small birds and mammals including robins, cardinals and waxwings.' },
+        { top: '50%', left: '73%', name: 'Red Twig Dogwood', scientific: 'Cornus sericea', info: 'An upright-spreading, suckering shrub that typically grows in the absence of pruning to 6-9\' tall with a slightly larger spread' },
+        { top: '55%', left: '10%', name: 'Sedum', scientific: 'Sedum', info: 'Sedum is a genus that includes annual, biennial, and perennial herbs. They are characterised by succulent leaves and stems.' },
+        { top: '89%', left: '20%', name: 'Tickseed', scientific: 'Coreopsis spp.', info: 'Long-blooming perennials with daisy-like flowers that provide nectar for butterflies and bees throughout summer.' },
+        { top: '85%', left: '80%', name: 'Rockfoil', scientific: 'Saxifraga', info: ' It has white, red, pink or purple flowers that grow in a rosette high above the plant\'s foliage.' },
+        { top: '60%', left: '55%', name: 'Milkweed', scientific: 'Asclepias', info: ' A noteworthy feeder on milkweeds is the monarch butterfly, which uses and requires certain milkweeds as host plants for its larvae.' },
+        { top: '80%', left: '45%', name: 'Yarrow', scientific: 'Achillea millefolium', info: 'A drought-tolerant perennial with ferny foliage and flat-topped flower clusters. Attracts butterflies and is excellent for cutting and drying.' },
+        { top: '55%', left: '35%', name: 'Deutzia', scientific: 'Deutzia gracilis', info: 'The flowers are produced in panicles or corymbs; they are white in most species, sometimes pink or reddish. The fruit is a dry capsule containing numerous small seeds.' },
+      ],
+      frontRear: [
+        { top: '40%', left: '30%', name: 'Hydrangea', scientific: 'Hydrangea', info: ' Hydrangea is also used as the common name for the genus; some are also often called hortensia.' },
+        { top: '65%', left: '37%', name: 'Turtlehead', scientific: 'Chelone glabra', info: 'Genus name comes from the Greek word chelone meaning tortoise in reference to the turtlehead shape of the flowers.' },
+        { top: '40%', left: '65%', name: 'Pink Dogwood', scientific: 'Cornus florida', info: 'The pink dogwood is an important source of food for many small birds and mammals including robins, cardinals and waxwings.' },
+        { top: '85%', left: '20%', name: 'Tickseed', scientific: 'Coreopsis spp.', info: 'Long-blooming perennials with daisy-like flowers that provide nectar for butterflies and bees throughout summer.' },
+        { top: '85%', left: '90%', name: 'Allium', scientific: 'Allium', info: 'Flowering plants with around 1000 accepted species,making Allium the largest genus in the family Amaryllidaceae and amongst the largest plant genera in the world.' },
+      ],
+      sideFront: [
+        { top: '38%', left: '65%', name: 'Japanese Maple', scientific: 'Acer palmatum', info: 'A small, elegant tree with deeply cut leaves that turn brilliant red in fall. This specimen provides a stunning focal point in the side garden.' },
+        { top: '53%', left: '40%', name: 'Azalea', scientific: 'Rhododendron', info: 'A very large genus of about 1,024 species of woody plants in the heath family. They can be either evergreen or deciduous' },
+        { top: '30%', left: '30%', name: 'Red Twig Dogwood', scientific: 'Cornus sericea', info: 'An upright-spreading, suckering shrub that typically grows in the absence of pruning to 6-9\' tall with a slightly larger spread' },
+        { top: '80%', left: '70%', name: 'Yarrow', scientific: 'Achillea millefolium', info: 'A drought-tolerant perennial with ferny foliage and flat-topped flower clusters. Attracts butterflies and is excellent for cutting and drying.' },
+        { top: '80%', left: '43%', name: 'Tickseed', scientific: 'Coreopsis spp.', info: 'Long-blooming perennials with daisy-like flowers that provide nectar for butterflies and bees throughout summer.' },
+        { top: '70%', left: '30%', name: 'Allium', scientific: 'Allium', info: 'Flowering plants with around 1000 accepted species,making Allium the largest genus in the family Amaryllidaceae and amongst the largest plant genera in the world.' },
+        { top: '60%', left: '20%', name: 'Tickseed', scientific: 'Coreopsis spp.', info: 'Long-blooming perennials with daisy-like flowers that provide nectar for butterflies and bees throughout summer.' }
+      ],
+      sideRear: [
+        { top: '35%', left: '20%', name: 'Culver\'s Root', scientific: 'Veronicastrum virginicum', info: 'A species of flowering plant in the plantain family, Plantaginaceae. It is native to the eastern United States and south-eastern Canada.' },
+        { top: '70%', left: '45%', name: 'Hosta', scientific: 'Hosta', info: 'The genus was named by Austrian botanist Leopold Trattinnick in 1812, in honor of the Austrian botanist Nicholas Thomas Host.' },
+        { top: '80%', left: '65%', name: 'Blue flag iris', scientific: 'Iris versicolor', info: 'It is one of the three Iris species in the Iris flower data set outlined by Ronald Fisher in his 1936 paper "The use of multiple measurements in taxonomic problems" as an example of linear discriminant analysis.' },
+        { top: '75%', left: '74%', name: 'Switchgrass', scientific: 'Panicum virgatum', info: 'A perennial warm season bunchgrass native to North America, where it occurs naturally from 55°N latitude in Canada southwards into the United States and Mexico.' },
+        { top: '80%', left: '15%', name: 'Chokeberry', scientific: 'Aronia', info: 'A genus of deciduous shrubs, the chokeberries, in the family Rosaceae native to eastern North America and most commonly found in wet woods and swamps' },
+        { top: '54%', left: '80%', name: 'Shasta Daisy', scientific: 'Leucanthemum × superbum', info: 'A commonly grown flowering herbaceous perennial plant with the classic daisy appearance of white petals around a yellow disc.' },
+        { top: '50%', left: '60%', name: 'Honeysuckle', scientific: 'Lonicera', info: 'Arching shrubs or twining vines in the genus Lonicera of the family Caprifoliaceae.' },
+      ],
+    };
+
+    // Toggle menu visibility
+    menuButton.addEventListener('click', () => {
+      const isExpanded = menuButton.getAttribute('aria-expanded') === 'true';
+
+      if (!isExpanded) {
+        // Show menu
+        menuList.style.display = 'block';
+        menuButton.setAttribute('aria-expanded', 'true');
+        menuList.setAttribute('aria-hidden', 'false');
+
+        // Set focus on first menu item
+        setTimeout(() => {
+          menuList.classList.add('active');
+          const firstMenuItem = menuList.querySelector('li');
+          if (firstMenuItem) firstMenuItem.setAttribute('tabindex', '0');
+        }, 10);
+      } else {
+        // Hide menu
+        menuList.classList.remove('active');
+        menuButton.setAttribute('aria-expanded', 'false');
+        menuList.setAttribute('aria-hidden', 'true');
+
+        setTimeout(() => {
+          menuList.style.display = 'none';
+        }, 200); // Match transition duration
+      }
+    });
+
+    // Change garden image and update hotspots on menu item click
+    menuList.addEventListener('click', handleMenuSelection);
+    menuList.addEventListener('keydown', (e) => {
+      // Handle Enter or Space key on menu items
+      if ((e.key === 'Enter' || e.key === ' ') && e.target.tagName === 'LI') {
+        e.preventDefault();
+        handleMenuSelection(e);
+      }
+
+      // Handle arrow keys for menu navigation
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        e.preventDefault();
+
+        const menuItems = Array.from(menuList.querySelectorAll('li'));
+        const currentIndex = menuItems.indexOf(document.activeElement);
+        let newIndex;
+
+        if (e.key === 'ArrowDown') {
+          newIndex = (currentIndex + 1) % menuItems.length;
+        } else {
+          newIndex = (currentIndex - 1 + menuItems.length) % menuItems.length;
+        }
+
+        menuItems.forEach(item => item.setAttribute('tabindex', '-1'));
+        menuItems[newIndex].setAttribute('tabindex', '0');
+        menuItems[newIndex].focus();
+      }
+
+      // Close menu with Escape key
+      if (e.key === 'Escape') {
+        menuButton.click();
+        menuButton.focus();
+      }
+    });
+
+    function handleMenuSelection(e) {
+      if (e.target.id === 'aboutMenuItem') {
+        aboutSection.style.display = 'block';
+        gardenContainer.style.display = 'none';
+        menuList.style.display = 'none'; // Hide menu after selection
+        menuButton.setAttribute('aria-expanded', 'false');
+
+        // Set focus to the about section
+        aboutSection.setAttribute('tabindex', '-1');
+        aboutSection.focus();
+
+        // Announce to screen readers
+        const announcement = document.createElement('div');
+        announcement.setAttribute('aria-live', 'polite');
+        announcement.textContent = 'About section is now displayed';
+        announcement.style.position = 'absolute';
+        announcement.style.width = '1px';
+        announcement.style.height = '1px';
+        announcement.style.overflow = 'hidden';
+        document.body.appendChild(announcement);
+        setTimeout(() => announcement.remove(), 1000);
+      } else if (e.target.id === 'hotspotsToggleItem') {
+        toggleHotspots();
+        menuList.style.display = 'none'; // Hide menu after selection
+        menuButton.setAttribute('aria-expanded', 'false');
+      } else if (e.target.tagName === 'LI' && e.target.dataset.image) {
+        const newImage = e.target.dataset.image;
+        const imageKey = newImage.split('.')[0]; // Extract key from image name
+
+        // Update the image with descriptive alt text
+        const altTexts = {
+          'frontRight': 'Front garden right side view with eastern redbud and other native plants',
+          'frontLeft': 'Front garden left side view featuring pink dogwood and other plantings',
+          'frontRear': 'Rear view of the front garden showing plant layout from the house perspective',
+          'sideFront': 'Side garden from the front yard perspective',
+          'sideRear': 'Side garden view from the rear of the property'
+        };
+
+        gardenImage.src = newImage;
+        gardenImage.alt = altTexts[imageKey] || `Garden view: ${e.target.textContent}`;
+
+        menuList.style.display = 'none'; // Hide menu after selection
+        menuButton.setAttribute('aria-expanded', 'false');
+
+        updateHotspots(hotspotData[imageKey]);
+        aboutSection.style.display = 'none'; // Hide about section
+        gardenContainer.style.display = 'block'; // Show garden container
+
+        // Announce the view change to screen readers
+        const announcement = document.createElement('div');
+        announcement.setAttribute('aria-live', 'polite');
+        announcement.textContent = `Garden view changed to ${e.target.textContent}`;
+        announcement.style.position = 'absolute';
+        announcement.style.width = '1px';
+        announcement.style.height = '1px';
+        announcement.style.overflow = 'hidden';
+        document.body.appendChild(announcement);
+        setTimeout(() => announcement.remove(), 1000);
+      }
+    }
+
+    // Function to update hotspots
+    function updateHotspots(hotspotsData) {
+      // Clear existing hotspots
+      const existingHotspots = document.querySelectorAll('.hotspot');
+      existingHotspots.forEach(hs => hs.remove());
+
+      // Add new hotspots
+      hotspotsData.forEach((data, index) => {
+        const hotspot = document.createElement('div');
+        hotspot.classList.add('hotspot');
+        hotspot.style.top = data.top;
+        hotspot.style.left = data.left;
+        hotspot.dataset.name = data.name;
+        hotspot.dataset.scientific = data.scientific;
+        hotspot.dataset.info = data.info;
+
+        // Accessibility attributes
+        hotspot.setAttribute('role', 'button');
+        hotspot.setAttribute('aria-label', `Plant: ${data.name}`);
+        hotspot.setAttribute('tabindex', '0');
+        hotspot.setAttribute('aria-haspopup', 'dialog');
+
+        // Handle both click and keyboard events
+        hotspot.addEventListener('click', () => showPlantInfo(data));
+        hotspot.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            showPlantInfo(data);
+          }
+
+          // Add navigation between hotspots with arrow keys
+          if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+            e.preventDefault();
+            const allHotspots = document.querySelectorAll('.hotspot');
+            const currentIndex = Array.from(allHotspots).indexOf(e.target);
+            let newIndex;
+
+            if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+              newIndex = (currentIndex + 1) % allHotspots.length;
+            } else {
+              newIndex = (currentIndex - 1 + allHotspots.length) % allHotspots.length;
+            }
+
+            allHotspots[newIndex].focus();
+          }
+        });
+
+        gardenContainer.appendChild(hotspot);
+      });
+
+      // Update the current view indicator in the menu
+      const menuItems = document.querySelectorAll('#menuList li[data-image]');
+      menuItems.forEach(item => {
+        item.setAttribute('aria-current', 'false');
+        item.style.fontWeight = 'normal';
+        item.style.backgroundColor = '';
+
+        const itemImageKey = item.dataset.image.split('.')[0];
+        const currentImageKey = gardenImage.src.split('/').pop().split('.')[0];
+
+        if (itemImageKey === currentImageKey) {
+          item.setAttribute('aria-current', 'true');
+          item.style.fontWeight = 'bold';
+          item.style.backgroundColor = 'rgba(74, 144, 226, 0.1)';
+        }
+      });
+    }
+
+    // Function to show plant info
+    function showPlantInfo(data) {
+      plantName.textContent = data.name;
+      plantSci.textContent = data.scientific;
+      plantInfo.textContent = data.info;
+      infoBox.style.display = 'block';
+
+      // Accessibility: Set focus to the info box and set ARIA attributes
+      infoBox.setAttribute('aria-hidden', 'false');
+
+      // Add live region announcements for screen readers
+      const announcement = document.createElement('div');
+      announcement.setAttribute('aria-live', 'assertive');
+      announcement.setAttribute('role', 'status');
+      announcement.classList.add('sr-only');
+      announcement.textContent = `Showing information for ${data.name}. ${data.scientific}. ${data.info}`;
+      document.body.appendChild(announcement);
+
+      // Trigger animation after display is set
+      setTimeout(() => {
+        infoBox.classList.add('active');
+        // Focus the close button for keyboard accessibility
+        document.getElementById('closeInfoBox').focus();
+
+        // Remove announcement after it's been read
+        setTimeout(() => announcement.remove(), 3000);
+      }, 10);
+    }
+
+    // Hide info box when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!e.target.classList.contains('hotspot') && !e.target.closest('.menu') && !e.target.closest('.info-box')) {
+        closeInfoBox();
+      }
+    });
+
+    // Close button for info box
+    document.getElementById('closeInfoBox').addEventListener('click', (e) => {
+      e.stopPropagation(); // Prevent event bubbling
+      closeInfoBox();
+    });
+
+    // Function to close the info box
+    function closeInfoBox() {
+      infoBox.classList.remove('active');
+      infoBox.setAttribute('aria-hidden', 'true');
+
+      setTimeout(() => {
+        infoBox.style.display = 'none';
+      }, 300); // Match transition duration
+
+      // Return focus to the last activated hotspot if available
+      const lastHotspot = document.activeElement;
+      if (lastHotspot && lastHotspot.classList && lastHotspot.classList.contains('hotspot')) {
+        setTimeout(() => {
+          lastHotspot.focus();
+        }, 310);
+      }
+    }
+
+    // Allow closing info box with Escape key
+    document.addEventListener('keydown', (e) => {
+      // Close info box with Escape
+      if (e.key === 'Escape' && infoBox.style.display === 'block') {
+        closeInfoBox();
+      }
+
+      // Global keyboard shortcuts
+      // Alt + M to toggle menu
+      if (e.altKey && e.key === 'm') {
+        e.preventDefault();
+        menuButton.click();
+      }
+
+      // Alt + A to go to about section
+      if (e.altKey && e.key === 'a') {
+        e.preventDefault();
+        if (aboutSection.style.display !== 'block') {
+          document.getElementById('aboutMenuItem').click();
+        } else {
+          backLink.click();
+        }
+      }
+
+      // Alt + H to toggle accessibility mode
+      if (e.altKey && e.key === 'h') {
+        e.preventDefault();
+        toggleA11yMode();
+      }
+
+      // Number keys 1-5 for quick navigation to garden views
+      if (e.altKey && e.key >= '1' && e.key <= '5') {
+        e.preventDefault();
+        const index = parseInt(e.key) - 1;
+        const menuItems = document.querySelectorAll('#menuList li[data-image]');
+        if (menuItems[index]) {
+          menuItems[index].click();
+        }
+      }
+    });
+
+    // Back to garden link
+    backLink.addEventListener('click', (e) => {
+      e.preventDefault(); // Prevent default link behavior
+      aboutSection.style.display = 'none';
+      gardenContainer.style.display = 'block';
+    });
+
+    // Site title link - also return to main view
+    const titleLink = document.querySelector('.site-title a');
+    titleLink.addEventListener('click', (e) => {
+      e.preventDefault(); // Prevent default link behavior
+      aboutSection.style.display = 'none';
+      gardenContainer.style.display = 'block';
+    });
+
+    // Initialize with front garden hotspots
+    updateHotspots(hotspotData.frontRight);
+
+    // Reference to doubleClickTip element
+    const doubleClickTip = document.getElementById('doubleClickTip');
+
+    // Accessibility toggle functionality
+    const a11yToggle = document.getElementById('a11yToggle');
+    const a11yToggleItem = document.getElementById('a11yToggleItem');
+    let a11yModeEnabled = false;
+
+    function toggleA11yMode() {
+      a11yModeEnabled = !a11yModeEnabled;
+      document.body.classList.toggle('a11y-high-contrast', a11yModeEnabled);
+
+      if (a11yModeEnabled) {
+        // Apply high contrast mode
+        document.body.style.background = 'white';
+        document.body.style.color = 'black';
+
+        // Enlarge text
+        document.body.style.fontSize = '120%';
+
+        // Increase hotspot size
+        const hotspots = document.querySelectorAll('.hotspot');
+        hotspots.forEach(hotspot => {
+          hotspot.style.width = '44px';
+          hotspot.style.height = '44px';
+          hotspot.style.backgroundColor = 'black';
+          hotspot.style.border = '3px solid yellow';
+        });
+
+        // Style double-click tip for high contrast
+        doubleClickTip.style.background = 'black';
+        doubleClickTip.style.color = 'yellow';
+        doubleClickTip.style.border = '2px solid yellow';
+
+        // Add announcement
+        const announcement = document.createElement('div');
+        announcement.setAttribute('aria-live', 'polite');
+        announcement.textContent = 'Accessibility mode enabled. Higher contrast and larger text are now active.';
+        announcement.classList.add('sr-only');
+        document.body.appendChild(announcement);
+        setTimeout(() => announcement.remove(), 3000);
+
+        localStorage.setItem('a11yMode', 'enabled');
+      } else {
+        // Remove high contrast mode
+        document.body.style.background = '';
+        document.body.style.color = '';
+        document.body.style.fontSize = '';
+
+        // Reset hotspot size
+        const hotspots = document.querySelectorAll('.hotspot');
+        hotspots.forEach(hotspot => {
+          hotspot.style.width = '';
+          hotspot.style.height = '';
+          hotspot.style.backgroundColor = '';
+          hotspot.style.border = '';
+        });
+
+        // Reset double-click tip styles
+        doubleClickTip.style.background = '';
+        doubleClickTip.style.color = '';
+        doubleClickTip.style.border = '';
+
+        // Add announcement
+        const announcement = document.createElement('div');
+        announcement.setAttribute('aria-live', 'polite');
+        announcement.textContent = 'Accessibility mode disabled. Standard display settings restored.';
+        announcement.classList.add('sr-only');
+        document.body.appendChild(announcement);
+        setTimeout(() => announcement.remove(), 3000);
+
+        localStorage.setItem('a11yMode', 'disabled');
+      }
+    }
+
+    a11yToggle.addEventListener('click', toggleA11yMode);
+    a11yToggleItem.addEventListener('click', () => {
+      toggleA11yMode();
+      menuButton.click(); // Close the menu
+    });
+
+    // Keyboard shortcuts help dialog
+    const helpToggle = document.getElementById('helpToggle');
+    const keyboardHelp = document.getElementById('keyboardHelp');
+    const closeHelp = document.getElementById('closeHelp');
+
+    helpToggle.addEventListener('click', () => {
+      keyboardHelp.style.display = 'block';
+      keyboardHelp.setAttribute('aria-hidden', 'false');
+      closeHelp.focus();
+
+      // Announce to screen readers
+      const announcement = document.createElement('div');
+      announcement.setAttribute('aria-live', 'assertive');
+      announcement.textContent = 'Keyboard shortcuts help dialog opened';
+      announcement.classList.add('sr-only');
+      document.body.appendChild(announcement);
+      setTimeout(() => announcement.remove(), 1000);
+    });
+
+    closeHelp.addEventListener('click', () => {
+      keyboardHelp.style.display = 'none';
+      keyboardHelp.setAttribute('aria-hidden', 'true');
+      helpToggle.focus();
+    });
+
+    // Show keyboard help with ? key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === '?' && !e.altKey && !e.ctrlKey && !e.metaKey) {
+        if (keyboardHelp.style.display !== 'block') {
+          helpToggle.click();
+        } else {
+          closeHelp.click();
+        }
+      }
+
+      // Close help dialog with Escape
+      if (e.key === 'Escape' && keyboardHelp.style.display === 'block') {
+        closeHelp.click();
+      }
+    });
+
+    // Check local storage for saved preference
+    if (localStorage.getItem('a11yMode') === 'enabled') {
+      toggleA11yMode();
+    }
+
+    // Function to toggle hotspots visibility
+    function toggleHotspots() {
+      hotspotsVisible = !hotspotsVisible;
+
+      if (hotspotsVisible) {
+        // Show hotspots
+        gardenContainer.classList.remove('hotspots-hidden');
+        hotspotsToggle.classList.remove('inactive');
+        hotspotsToggle.classList.add('active');
+        hotspotsToggle.querySelector('span').textContent = '👁️';
+        hotspotsToggle.setAttribute('aria-label', 'Hide plant hotspots');
+
+        // Animate button highlight
+        hotspotsToggleHighlight.style.background = 'rgba(107, 187, 107, 0.4)';
+        hotspotsToggleHighlight.style.transform = 'translateX(0)';
+
+        // Save preference
+        localStorage.setItem('hotspotsVisible', 'true');
+
+        // Announce to screen readers
+        const announcement = document.createElement('div');
+        announcement.setAttribute('aria-live', 'polite');
+        announcement.textContent = 'Plant hotspots are now visible';
+        announcement.classList.add('sr-only');
+        document.body.appendChild(announcement);
+        setTimeout(() => announcement.remove(), 1000);
+      } else {
+        // Hide hotspots
+        gardenContainer.classList.add('hotspots-hidden');
+        hotspotsToggle.classList.remove('active');
+        hotspotsToggle.classList.add('inactive');
+        hotspotsToggle.querySelector('span').textContent = '👁️‍🗨️';
+        hotspotsToggle.setAttribute('aria-label', 'Show plant hotspots');
+
+        // Animate button highlight
+        hotspotsToggleHighlight.style.background = 'rgba(187, 107, 107, 0.4)';
+        hotspotsToggleHighlight.style.transform = 'translateX(-100%)';
+
+        // Save preference
+        localStorage.setItem('hotspotsVisible', 'false');
+
+        // Announce to screen readers
+        const announcement = document.createElement('div');
+        announcement.setAttribute('aria-live', 'polite');
+        announcement.textContent = 'Plant hotspots are now hidden';
+        announcement.classList.add('sr-only');
+        document.body.appendChild(announcement);
+        setTimeout(() => announcement.remove(), 1000);
+      }
+    }
+
+    // Double-click on garden container to toggle hotspot visibility
+    gardenContainer.addEventListener('dblclick', function (e) {
+      // Only if we're not clicking on a hotspot already
+      if (!e.target.classList.contains('hotspot')) {
+        toggleHotspots();
+      }
+    });
+
+    // Add option to temporarily fade hotspots while holding Alt key
+    document.addEventListener('keydown', function (e) {
+      if (e.altKey && hotspotsVisible) {
+        gardenContainer.classList.add('hotspots-faded');
+      }
+    });
+
+    document.addEventListener('keyup', function (e) {
+      if (e.key === 'Alt') {
+        gardenContainer.classList.remove('hotspots-faded');
+      }
+    });
+
+    // Add event listener to the toggle button
+    hotspotsToggle.addEventListener('click', toggleHotspots);
+
+    // Add keyboard shortcut for toggling hotspots (Alt+H)
+    document.addEventListener('keydown', (e) => {
+      if (e.altKey && e.key === 'v') {
+        e.preventDefault();
+        toggleHotspots();
+      }
+    });
+
+    // Initialize hotspots visibility based on saved preference
+    if (localStorage.getItem('hotspotsVisible') === 'false') {
+      toggleHotspots(); // Will toggle to hidden since default is visible
+    } else {
+      // Initialize button state for visible hotspots
+      hotspotsToggle.classList.add('active');
+      hotspotsToggleHighlight.style.transform = 'translateX(0)';
+      hotspotsToggleHighlight.style.background = 'rgba(107, 187, 107, 0.4)';
+    }
+
+    // Announce page loaded to screen readers
+    window.addEventListener('load', () => {
+      const announcement = document.createElement('div');
+      announcement.setAttribute('aria-live', 'polite');
+      announcement.textContent = "Cassie's Garden page loaded. Use the menu to navigate between different garden views.";
+      announcement.classList.add('sr-only');
+      document.body.appendChild(announcement);
+      setTimeout(() => announcement.remove(), 3000);
+    });
+
+    // Touch swipe navigation for mobile devices
+    let touchStartX = 0;
+    let touchEndX = 0;
+    let touchStartY = 0;
+    let touchEndY = 0;
+    const swipeLeftIndicator = document.getElementById('swipeLeft');
+    const swipeRightIndicator = document.getElementById('swipeRight');
+    let isSwiping = false;
+
+    function handleSwipe() {
+      const swipeThreshold = 75; // Minimum distance for a swipe
+      const swipeDifference = touchEndX - touchStartX;
+      const verticalDifference = Math.abs(touchEndY - touchStartY);
+
+      // Reset swiping state
+      isSwiping = false;
+
+      // Only proceed if we have a significant horizontal swipe and not much vertical movement
+      if (Math.abs(swipeDifference) < swipeThreshold || verticalDifference > 100) {
+        return;
+      }
+
+      // Get all garden view menu items
+      const gardenViews = Array.from(document.querySelectorAll('#menuList li[data-image]'));
+
+      // Find current view
+      const currentImageKey = gardenImage.src.split('/').pop().split('.')[0];
+      const currentViewIndex = gardenViews.findIndex(item => {
+        const itemImageKey = item.dataset.image.split('.')[0];
+        return itemImageKey === currentImageKey;
+      });
+
+      if (currentViewIndex === -1) {
+        return; // Current view not found in menu items
+      }
+
+      let nextViewIndex;
+
+      if (swipeDifference > 0) {
+        // Swipe right - go to previous view
+        nextViewIndex = (currentViewIndex - 1 + gardenViews.length) % gardenViews.length;
+        // Show right indicator
+        showSwipeIndicator(swipeRightIndicator);
+      } else {
+        // Swipe left - go to next view
+        nextViewIndex = (currentViewIndex + 1) % gardenViews.length;
+        // Show left indicator
+        showSwipeIndicator(swipeLeftIndicator);
+      }
+
+      // Simulate click on the next menu item
+      gardenViews[nextViewIndex].click();
+
+      // Announce the swipe action to screen readers
+      const direction = swipeDifference > 0 ? 'right' : 'left';
+      const announcement = document.createElement('div');
+      announcement.setAttribute('aria-live', 'polite');
+      announcement.textContent = `Swiped ${direction} to ${gardenViews[nextViewIndex].textContent}`;
+      announcement.classList.add('sr-only');
+      document.body.appendChild(announcement);
+      setTimeout(() => announcement.remove(), 1000);
+    }
+
+    function showSwipeIndicator(indicator) {
+      // Use direct style changes with transitions (defined in CSS)
+      indicator.style.opacity = '1';
+      indicator.style.transform = 'translateY(-50%)';
+
+      // Use setTimeout to revert the styles after a short delay
+      setTimeout(() => {
+        indicator.style.opacity = '0';
+      }, 400);
+    }
+
+    // Add touch event listeners to the garden container
+    gardenContainer.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+      touchStartY = e.changedTouches[0].screenY;
+      isSwiping = true;
+    }, { passive: true });
+
+    gardenContainer.addEventListener('touchmove', (e) => {
+      if (!isSwiping) return;
+
+      const currentX = e.changedTouches[0].screenX;
+      const diff = currentX - touchStartX;
+
+      // Only show indicator during significant horizontal movement
+      if (Math.abs(diff) > 40) {
+        if (diff > 0) {
+          swipeRightIndicator.style.opacity = "0.5";
+          swipeLeftIndicator.style.opacity = "0";
+        } else {
+          swipeLeftIndicator.style.opacity = "0.5";
+          swipeRightIndicator.style.opacity = "0";
+        }
+      }
+    }, { passive: true });
+
+    gardenContainer.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      touchEndY = e.changedTouches[0].screenY;
+
+      // Reset indicators
+      swipeLeftIndicator.style.opacity = "0";
+      swipeRightIndicator.style.opacity = "0";
+
+      handleSwipe();
+    }, { passive: true });
+
+    gardenContainer.addEventListener('touchcancel', () => {
+      isSwiping = false;
+      swipeLeftIndicator.style.opacity = "0";
+      swipeRightIndicator.style.opacity = "0";
+    }, { passive: true });
+
+    // Garden Plan PDF functionality
+    const viewPdfLink = document.getElementById('viewPdfLink');
+    const pdfPreview = document.getElementById('pdfPreview');
+    const pdfFrame = document.getElementById('pdfFrame');
+    const pdfLoading = document.getElementById('pdfLoading');
+
+    // Toggle PDF preview when clicking the link
+    viewPdfLink.addEventListener('click', (e) => {
+      // If we're on mobile or small screens, let the link behave normally
+      // and open in a new tab/window for better viewing experience
+      if (window.innerWidth <= 768) {
+        return; // Let default link behavior work
+      }
+
+      // On larger screens, show the inline preview
+      e.preventDefault();
+      togglePdfPreview();
+    });
+
+    // Function to toggle PDF preview
+    function togglePdfPreview() {
+      const isCurrentlyHidden = pdfPreview.style.display === 'none';
+
+      if (isCurrentlyHidden) {
+        // Show the preview
+        pdfPreview.style.display = 'block';
+
+        // Show loading indicator
+        pdfLoading.style.display = 'flex';
+
+        // Set iframe src if it hasn't been loaded yet
+        if (pdfFrame.src === 'about:blank') {
+          pdfFrame.src = pdfFrame.getAttribute('data-src');
+        }
+
+        // Handle iframe load event
+        pdfFrame.onload = function () {
+          // Hide loading indicator
+          pdfLoading.style.display = 'none';
+        };
+
+        viewPdfLink.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="18 15 12 9 6 15"></polyline>
+        </svg>
+        Hide Garden Plan
+      `;
+
+        // Announce to screen readers
+        const announcement = document.createElement('div');
+        announcement.setAttribute('aria-live', 'polite');
+        announcement.textContent = 'Garden plan PDF is now displayed';
+        announcement.classList.add('sr-only');
+        document.body.appendChild(announcement);
+        setTimeout(() => announcement.remove(), 1000);
+      } else {
+        // Hide the preview
+        pdfPreview.style.display = 'none';
+        viewPdfLink.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+        View Garden Plan
+      `;
+
+        // Announce to screen readers
+        const announcement = document.createElement('div');
+        announcement.setAttribute('aria-live', 'polite');
+        announcement.textContent = 'Garden plan PDF preview hidden';
+        announcement.classList.add('sr-only');
+        document.body.appendChild(announcement);
+        setTimeout(() => announcement.remove(), 1000);
+      }
+    }
+
+    // Add keyboard shortcut (Alt+P) for PDF preview
+    document.addEventListener('keydown', function (e) {
+      // Toggle PDF preview with Alt+P when in about section
+      if (e.altKey && e.key === 'p' && aboutSection.style.display === 'block') {
+        e.preventDefault();
+        togglePdfPreview();
+      }
+    });
+
+    // Add a responsive media query handler for the PDF preview
+    window.addEventListener('resize', () => {
+      if (window.innerWidth <= 768 && pdfPreview.style.display !== 'none') {
+        // Hide the preview on small screens and reset button text
+        pdfPreview.style.display = 'none';
+        viewPdfLink.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+        View Garden Plan
+      `;
+      }
+    });
+  </script>
+  <footer role="contentinfo">
+    vibe coded with ❤️ in South Jersey
+  </footer>
+</body>
+
+</html>
